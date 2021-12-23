@@ -1,3 +1,4 @@
+import { CalculadoraModule } from './calculadora/calculadora.module';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
@@ -7,6 +8,9 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      imports: [
+        CalculadoraModule
+      ]
     }).compileComponents();
   });
 

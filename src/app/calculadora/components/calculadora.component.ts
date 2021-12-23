@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CalculadoraService } from '../services';
 
 @Component({
   selector: 'app-calculadora',
@@ -7,9 +8,123 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CalculadoraComponent implements OnInit {
 
-  constructor() { }
+  private numero1: string;
+  private numero2: string;
+  private resultado: number;
+  private operacao: string;
 
-  ngOnInit(): void {
+  constructor(private calculadoraService: CalculadoraService) { }
+
+  ngOnInit() {
+    this.limpar();
   }
 
+  /**
+   * Inicializa todos os operadores para o valor padrão.
+   *
+   * @return void
+   */
+  limpar(): void {
+    this.numero1 = '0';
+    this.numero2 = null;
+    this.resultado = null;
+    this.operacao = null;
+  }
+
+  /**
+   * Adiciona o número selecionado para o cálculo posteriormente.
+   *
+   * @param string numero
+   * @return void
+   */
+  adicionarNumero(numero: string): void {
+    if(this.operacao === null){
+      this.numero1 = this.concatenarNumero(this.numero1, numero);
+    }else{
+      this.numero2 = this.concatenarNumero(this.numero2, numero);
+    }
+  }
+
+  /**
+   * Retorna o valor concatenado. Trata o separador decimal.
+   *
+   * @param string NumAtual
+   * @param string numConcat
+   * @return string
+   */
+  concatenarNumero(numAtual: string, numConcat: string): string {
+    if(numAtual === '0' || numAtual === null){ //se tiver apenas 0 ou null, reinicia o valor
+      numAtual = '';
+    }
+
+    //se o primeiro digito é '.', concatena '0' antes do ponto
+    if(numConcat === '.' && numAtual === '') {
+      return '0.';
+    }
+
+    //caso '.' for digitado e já contenha um '.', apenas retorna
+    if(numConcat === '.' && numAtual.indexOf('.') > -1) {
+      return numAtual;
+    }
+
+    return numAtual + numConcat;
+  }
+
+  /**
+   * Executa lógica quando um operador for selecionado.
+   * Caso já possua uma operação selecionada, executa a operação
+   * anterior e, define uma nova operação.
+   *
+   * @param string operacao
+   * @return void
+   */
+  definirOperacao(operacao: string) : void {
+    //define uma operação caso não exista uma
+    if(this.operacao === null){
+      this.operacao = operacao;
+      return;
+    }
+  }
+  /* caso operação definida e número 2 selecionado,
+  efetua o cálculo da operação */
+  if(this.numero2 != null){
+    this.resultado = this.calculadoraService.calcular(
+      parseFloat(this.numero1);
+      parseFloat(this.numero2);
+      this.operacao);
+    this.operacao = operacao;
+    this.numero1 = this.resultado.toString();
+    this.numero2 = null;
+    this.resultado = null;
+  }
+
+  /**
+   * Efetua o cálculo de uma operação.
+   *
+   * @return void
+   */
+  calcular(): void {
+    if(this.numero2 === null) {
+      return;
+    }
+    this.resultado = this.CalculadoraService.calcular(
+      parseFloat(this.numero1),
+      parseFloat(this.numero2),
+      this.operacao);
+  }
+
+  /**
+   * Retorna o valor a ser exibido na tela da calculadora.
+   *
+   * @return string
+   */
+  get display(): string {
+    if(this.resultado != null) {
+      return this.resultado.toString();
+    }
+    if(this.numero2 != null) {
+      return this.numero2;
+    }
+    return this.numero1;
+  }
 }
